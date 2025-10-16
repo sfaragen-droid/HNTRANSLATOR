@@ -1,166 +1,47 @@
-let dictionary = { kurdishToArabic: {}, arabicToKurdish: {} };
-
-let isKurdishToArabic = true;
-
-
-
-// تحميل القاموس
-
-fetch('dictionary.json')
-
-  .then(res => res.json())
-
-  .then(data => {
-
-    dictionary = data;
-
-  })
-
-  .catch(err => {
-
-    console.error('خطأ في تحميل dictionary.json');
-
-    alert('لم يتم تحميل ملف الترجمة. تأكد من وجوده في نفس المجلد.');
-
-  });
-
-
-
-const kurdishInput = document.getElementById('kurdishInput');
-
-const arabicInput = document.getElementById('arabicInput');
-
-const swapBtn = document.getElementById('swapBtn');
-
-const speakBtn = document.getElementById('speakBtn');
-
-const drawBtn = document.getElementById('drawBtn');
-
-
-
-kurdishInput.addEventListener('input', () => translate('kurdish'));
-
-arabicInput.addEventListener('input', () => translate('arabic'));
-
-
-
-function translate(source) {
-
-  const input = source === 'kurdish' ? kurdishInput.value.trim() : arabicInput.value.trim();
-
-  if (!input) {
-
-    if (source === 'kurdish') arabicInput.value = '';
-
-    else kurdishInput.value = '';
-
-    return;
-
-  }
-
-
-
-  const words = input.split(/\s+/);
-
-  let result = '';
-
-
-
-  if (source === 'kurdish') {
-
-    result = words.map(w => dictionary.kurdishToArabic[w] || `[${w}]`).join(' ');
-
-    arabicInput.value = result;
-
-    isKurdishToArabic = true;
-
-  } else {
-
-    result = words.map(w => dictionary.arabicToKurdish[w] || `[${w}]`).join(' ');
-
-    kurdishInput.value = result;
-
-    isKurdishToArabic = false;
-
-  }
-
+.translator {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-family: Arial, sans-serif;
+  text-align: center;
 }
 
+textarea {
+  width: 100%;
+  height: 100px;
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+}
 
+.swap-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+}
 
-swapBtn.addEventListener('click', () => {
+#swapBtn {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+}
 
-  const temp = kurdishInput.value;
-
-  kurdishInput.value = arabicInput.value;
-
-  arabicInput.value = temp;
-
-
-
-  // تبديل الاتجاه
-
-  isKurdishToArabic = !isKurdishToArabic;
-
-
-
-  // إعادة الترجمة
-
-  if (kurdishInput.value) translate('kurdish');
-
-  if (arabicInput.value) translate('arabic');
-
-});
-
-
-
-speakBtn.addEventListener('click', () => {
-
-  const text = isKurdishToArabic ? arabicInput.value : kurdishInput.value;
-
-  if (!text) return;
-
-
-
-  const utterance = new SpeechSynthesisUtterance(text);
-
-  utterance.lang = isKurdishToArabic ? 'ar-SA' : 'ku'; // ملاحظة: دعم الكردية محدود
-
-  speechSynthesis.speak(utterance);
-
-});
-
-
-
-drawBtn.addEventListener('click', () => {
-
-  const text = isKurdishToArabic ? arabicInput.value : kurdishInput.value;
-
-  if (!text) return;
-
-
-
-  const win = window.open('', '_blank', 'width=700,height=500');
-
-  win.document.write(`
-
-    <html>
-
-    <head><title>رسم الكلمة</title></head>
-
-    <body style="background:#fff; display:flex; justify-content:center; align-items:center; padding:20px;">
-
-      <div style="font-family: 'Dancing Script', cursive; font-size:28px; white-space:pre-wrap; text-align:center; max-width:90%;">
-
-        ${text.replace(/</g, '<').replace(/>/g, '>').replace(/\n/g, '<br>')}
-
-      </div>
-
-    </body>
-
-    </html>
-
-  `);
-
-});
-
+#translateBtn {
+  background: #2196F3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
